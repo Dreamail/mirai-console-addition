@@ -106,7 +106,8 @@ object AdditionBase : KotlinPlugin() {
 
     @ConsoleExperimentalAPI
     object additionCommand : CompositeCommand(
-            commandOwner, "addition"
+            commandOwner, "addition",
+            description = "Console-Addition插件管理主命令"
     ) {
         @SubCommand
         suspend fun CommandSender.reload() {
