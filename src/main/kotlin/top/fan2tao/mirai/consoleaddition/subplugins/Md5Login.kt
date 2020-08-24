@@ -7,6 +7,7 @@ import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
+import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
 import net.mamoe.mirai.event.selectMessagesUnit
 import net.mamoe.mirai.utils.DirectoryLogger
 import net.mamoe.mirai.utils.weeksToMillis
@@ -40,6 +41,7 @@ object Md5Login : SubPlugin {
         }
     }
 
+    @ConsoleExperimentalAPI
     fun md5Login(id: Long, md5str: String) {
         AdditionBase.launch {
             kotlin.runCatching {
@@ -88,6 +90,7 @@ object Md5Login : SubPlugin {
             )
         }
     }
+    @ExperimentalUnsignedTypes
     internal fun String.chunkedHexToBytes(): ByteArray =
             this.asSequence().chunked(2).map { (it[0].toString() + it[1]).toUByte(16).toByte() }.toList().toByteArray()
 }
