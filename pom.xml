@@ -19,10 +19,6 @@
 
     <repositories>
         <repository>
-            <id>alimaven</id>
-            <url>http://maven.aliyun.com/nexus/content/repositories/central/</url>
-        </repository>
-        <repository>
             <id>jcenter</id>
             <url>https://jcenter.bintray.com/</url>
         </repository>
