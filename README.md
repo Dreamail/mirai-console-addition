@@ -46,6 +46,16 @@ md5login:
 > 设置为false关闭指定子功能
 
 
+### 管理命令
+`Console Addition`提供一个复合命令经行管理子功能
+
+```
+/addition:
+    reload #重载插件
+    enable 子功能名（autologin / md5login） #启用子功能
+    disable 子功能名（autologin / md5login） #禁用子功能
+```
+
 ### md5密码登录
 
 `Console Addition`提供了新的Command进行md5登录
