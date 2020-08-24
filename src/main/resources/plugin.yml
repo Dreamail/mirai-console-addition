@@ -1,0 +1,3 @@
+name: "Console-Addition"
+main: "top.fan2tao.mirai.consoleaddition.AdditionBase"
+version: "1.0.0"
