@@ -40,7 +40,7 @@ object AutoLogin : SubPlugin {
             AdditionBase.config.autologin.qq = qq
             AdditionBase.config.autologin.passwd = encodeMD5(passwd)
             AdditionBase.config.autologin.enabled = true
-            AdditionBase.config.save("config.yml")
+            AdditionBase.config.save()
             AdditionBase.logger.info("添加自动登录成功")
         }
     }

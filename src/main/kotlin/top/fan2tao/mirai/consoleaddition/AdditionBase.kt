@@ -9,15 +9,15 @@ import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
 import net.mamoe.yamlkt.Yaml
 import top.fan2tao.mirai.consoleaddition.subplugins.AutoLogin
 import top.fan2tao.mirai.consoleaddition.subplugins.Md5Login
+import java.io.File
 
 object AdditionBase : KotlinPlugin() {
-    object commandOwner : PluginCommandOwner(this)
-
     private val subPlugins = listOf(
             AutoLogin,
             Md5Login
     )
 
+    val configFile by lazy { resolveDataFile("config.yml") }
     lateinit var config: Config
 
     interface IConfig {
@@ -47,8 +47,8 @@ object AdditionBase : KotlinPlugin() {
                 else -> null
             }
         }
-        fun save(file: String) {
-            file(file).writeText(Yaml.default.encodeToString(serializer(), this))
+        fun save() {
+            configFile.writeText(Yaml.default.encodeToString(serializer(), this))
         }
     }
 
@@ -56,11 +56,14 @@ object AdditionBase : KotlinPlugin() {
      * 在插件被加载时调用. 只会被调用一次.
      */
     override fun onLoad() {
-        if (file("config.yml").readText() == "") {
+        if (!configFile.exists()) {
+            configFile.createNewFile()
+        }
+        if (configFile.readText() == "") {
             config = Config(Config.AutoLogin(qq = 0L, passwd = ""), Config.Md5Login())
-            config.save("config.yml")
+            config.save()
         } else {
-            config = Yaml.default.decodeFromString(Config.serializer(), file("config.yml").readText())
+            config = Yaml.default.decodeFromString(Config.serializer(), configFile.readText())
         }
         subPlugins.forEach {
             if (if (config.get(it.name) == null) {
@@ -97,7 +100,7 @@ object AdditionBase : KotlinPlugin() {
                 it.onDisable()
             }
         }
-        config.save("config.yml")
+        config.save()
         additionCommand.unregister()
     }
 
