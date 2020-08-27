@@ -73,7 +73,6 @@ object AdditionBase : KotlinPlugin() {
                 it.onLoad()
             }
         }
-        super.onLoad()
     }
 
     /**
@@ -86,7 +85,6 @@ object AdditionBase : KotlinPlugin() {
             }
         }
         additionCommand.register()
-        super.onEnable()
     }
 
     /**
@@ -101,12 +99,11 @@ object AdditionBase : KotlinPlugin() {
         }
         config.save("config.yml")
         additionCommand.unregister()
-        super.onDisable()
     }
 
     @ConsoleExperimentalAPI
     object additionCommand : CompositeCommand(
-            commandOwner, "addition",
+            AdditionBase, "addition",
             description = "Console-Addition插件管理主命令"
     ) {
         @SubCommand

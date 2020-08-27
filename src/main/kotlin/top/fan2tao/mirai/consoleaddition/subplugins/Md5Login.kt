@@ -28,11 +28,12 @@ object Md5Login : SubPlugin {
     }
 
     override fun onDisable() {
+        enabled = false
         md5LoginCommand.unregister()
     }
 
     object md5LoginCommand : SimpleCommand(
-            AdditionBase.commandOwner, "md5login",
+            AdditionBase, "md5login",
             description = "使用MD5登录 /md5login QQ Passwd"
     ) {
         @Handler
@@ -46,30 +47,11 @@ object Md5Login : SubPlugin {
         AdditionBase.launch {
             kotlin.runCatching {
                 Bot(id, md5str.chunkedHexToBytes()) {
-                    fun redirectNetworkLogToDirectory(
-                           dir: File = File("logs"),
-                         retain: Long = 1.weeksToMillis,
-                            identity: (bot: Bot) -> String = { "Net ${it.id}" }
-                    ) {
-                         require(!dir.isFile) { "dir must not be a file" }
-                        dir.mkdirs()
-                        networkLoggerSupplier = { DirectoryLogger(identity(it), dir, retain) }
-                    }
-
-                    fun redirectBotLogToDirectory(
-                            dir: File = File("logs"),
-                            retain: Long = 1.weeksToMillis,
-                            identity: (bot: Bot) -> String = { "Net ${it.id}" }
-                    ) {
-                        require(!dir.isFile) { "dir must not be a file" }
-                        dir.mkdirs()
-                        botLoggerSupplier = { DirectoryLogger(identity(it), dir, retain) }
-                    }
-
                     fileBasedDeviceInfo()
-                    this.loginSolver = MiraiConsole.frontEnd.createLoginSolver()
                     redirectNetworkLogToDirectory()
-                    //redirectBotLogToDirectory()
+                    //parentCoroutineContext = MiraiConsole.childScopeContext()
+
+                    //this.loginSolver = MiraiConsoleImplementationBridge.createLoginSolver(id, this)
                 }.alsoLogin()
             }.fold(
                     onSuccess = { AdditionBase.logger.info("${it.nick} ($id) Login succeed") },

@@ -82,7 +82,7 @@
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-console</artifactId>
-            <version>1.0-M2-1</version>
+            <version>1.0-M3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -94,7 +94,7 @@
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-console-pure</artifactId>
-            <version>1.0-M2-1</version>
+            <version>1.0-M3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

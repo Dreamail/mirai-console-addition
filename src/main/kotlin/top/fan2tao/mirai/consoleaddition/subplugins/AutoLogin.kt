@@ -27,11 +27,12 @@ object AutoLogin : SubPlugin {
     }
 
     override fun onDisable() {
+        enabled = false
         autoLoginCommand.unregister()
     }
 
     object autoLoginCommand : SimpleCommand(
-            AdditionBase.commandOwner, "autologin",
+            AdditionBase, "autologin",
             description = "设置自动登录：/auto-login QQ Passwd"
     ) {
         @Handler
