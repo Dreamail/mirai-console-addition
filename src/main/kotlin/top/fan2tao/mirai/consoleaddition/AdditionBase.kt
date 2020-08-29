@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
+import net.mamoe.mirai.console.data.*
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
 import net.mamoe.yamlkt.Yaml
@@ -11,14 +12,10 @@ import top.fan2tao.mirai.consoleaddition.subplugins.AutoLogin
 import top.fan2tao.mirai.consoleaddition.subplugins.Md5Login
 
 object AdditionBase : KotlinPlugin() {
-    object commandOwner : PluginCommandOwner(this)
-
-    private val subPlugins = listOf(
-            AutoLogin,
-            Md5Login
+    private val subPlugins = mapOf(
+            Pair("autologin", Pair(AutoLogin, PluginConfig.autoLogin)),
+            Pair("md5login", Pair(Md5Login, PluginConfig.md5Login))
     )
-
-    lateinit var config: Config
 
     interface IConfig {
         var enabled: Boolean
@@ -47,30 +44,34 @@ object AdditionBase : KotlinPlugin() {
                 else -> null
             }
         }
-        fun save(file: String) {
-            file(file).writeText(Yaml.default.encodeToString(serializer(), this))
-        }
+    }
+
+    object PluginConfig : AutoSavePluginConfig() {
+        var autoLogin by value(AutoLogin(qq = 0L, passwd = ""))
+        var md5Login by value(Md5Login())
+
+        @Serializable
+        data class AutoLogin(
+                override var enabled: Boolean = true,
+
+                var qq: Long,
+                var passwd: String
+        ) : IConfig
+        @Serializable
+        data class Md5Login(
+                override var enabled: Boolean = true,
+        ) : IConfig
     }
 
     /**
      * 在插件被加载时调用. 只会被调用一次.
      */
     override fun onLoad() {
-        if (file("config.yml").readText() == "") {
-            config = Config(Config.AutoLogin(qq = 0L, passwd = ""), Config.Md5Login())
-            config.save("config.yml")
-        } else {
-            config = Yaml.default.decodeFromString(Config.serializer(), file("config.yml").readText())
-        }
         subPlugins.forEach {
-            if (if (config.get(it.name) == null) {
-                        return@forEach
-                    } else {
-                        config.get(it.name)!!.enabled
-                    } && !it.on)  {
-                logger.info("[Console-Addition] Loading ${it.name}")
-                it.on = true
-                it.onLoad()
+            if (it.value.second.enabled && !it.value.first.on)  {
+                logger.info("[Console-Addition] Loading ${it.key}")
+                it.value.first.on = true
+                it.value.first.onLoad()
             }
         }
     }
@@ -79,9 +80,10 @@ object AdditionBase : KotlinPlugin() {
      * 在插件被启用时调用, 可能会被调用多次
      */
     override fun onEnable() {
+        PluginConfig.reload()
         subPlugins.forEach {
-            if (it.on && !it.enabled) {
-                it.onEnable()
+            if (it.value.first.on && !it.value.first.enabled) {
+                it.value.first.onEnable()
             }
         }
         additionCommand.register()
@@ -92,12 +94,11 @@ object AdditionBase : KotlinPlugin() {
      */
     override fun onDisable() {
         subPlugins.forEach {
-            if (it.on && it.enabled) {
-                logger.info("[Console-Addition] Disabling ${it.name}")
-                it.onDisable()
+            if (it.value.first.on && it.value.first.enabled) {
+                logger.info("[Console-Addition] Disabling ${it.key}")
+                it.value.first.onDisable()
             }
         }
-        config.save("config.yml")
         additionCommand.unregister()
     }
 
@@ -114,30 +115,30 @@ object AdditionBase : KotlinPlugin() {
         }
         @SubCommand
         suspend fun CommandSender.enable(str: String) {
-            if (if (config.get(str) == null) {
+            if (if (subPlugins.containsKey(str)) {
                         logger.info("你输入了个错误的字插件名")
                         return
                     } else {
-                        config.get(str)!!.enabled
+                        subPlugins[str]!!.second.enabled
                     }) {
                 logger.info(str + "already enabled")
             } else {
-                config.get(str)!!.enabled = true
+                subPlugins[str]!!.second.enabled = true
                 reload()
                 logger.info("[Console-Addition] Enable $str Success")
             }
         }
         @SubCommand
         suspend fun CommandSender.disable(str: String) {
-            if (if (config.get(str) == null) {
+            if (if (subPlugins.containsKey(str)) {
                         logger.info("你输入了个错误的字插件名")
                         return
                     } else {
-                        !config.get(str)!!.enabled
+                        !subPlugins[str]!!.second.enabled
                     }) {
                 logger.info(str + "already disabled")
             } else {
-                config.get(str)!!.enabled = false
+                subPlugins[str]!!.second.enabled = false
                 reload()
                 logger.info("[Console-Addition] Disable $str Success")
             }

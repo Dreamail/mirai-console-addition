@@ -4,11 +4,11 @@ import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
 import top.fan2tao.mirai.consoleaddition.AdditionBase
+import top.fan2tao.mirai.consoleaddition.AdditionBase.PluginConfig
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 object AutoLogin : SubPlugin {
-    override val name: String = "autologin"
     override var on: Boolean = false
     override var enabled: Boolean = false
 
@@ -17,9 +17,9 @@ object AutoLogin : SubPlugin {
     }
 
     override fun onEnable() {
-        if (AdditionBase.config.autologin.qq != 0L && AdditionBase.config.autologin.passwd !="") {
-            AdditionBase.logger.info("正在自动登录${AdditionBase.config.autologin.qq}")
-            Md5Login.md5Login(AdditionBase.config.autologin.qq, AdditionBase.config.autologin.passwd)
+        if (PluginConfig.autoLogin.qq != 0L && PluginConfig.autoLogin.passwd !="") {
+            AdditionBase.logger.info("正在自动登录${PluginConfig.autoLogin.qq}")
+            Md5Login.md5Login(PluginConfig.autoLogin.qq, PluginConfig.autoLogin.passwd)
         } else {
             AdditionBase.logger.info("未设置自动登录的账号，跳过自动登录...")
         }
@@ -27,8 +27,8 @@ object AutoLogin : SubPlugin {
     }
 
     override fun onDisable() {
-        enabled = false
         autoLoginCommand.unregister()
+        enabled = false
     }
 
     object autoLoginCommand : SimpleCommand(
@@ -37,10 +37,9 @@ object AutoLogin : SubPlugin {
     ) {
         @Handler
         suspend fun CommandSender.handle(qq: Long, passwd: String) {
-            AdditionBase.config.autologin.qq = qq
-            AdditionBase.config.autologin.passwd = encodeMD5(passwd)
-            AdditionBase.config.autologin.enabled = true
-            AdditionBase.config.save("config.yml")
+            PluginConfig.autoLogin.qq = qq
+            PluginConfig.autoLogin.passwd = encodeMD5(passwd)
+            PluginConfig.autoLogin.enabled = true
             AdditionBase.logger.info("添加自动登录成功")
         }
     }

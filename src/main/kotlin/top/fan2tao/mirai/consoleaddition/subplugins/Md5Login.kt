@@ -15,7 +15,6 @@ import top.fan2tao.mirai.consoleaddition.AdditionBase
 import java.io.File
 
 object Md5Login : SubPlugin {
-    override val name: String = "md5login"
     override var on: Boolean = false
     override var enabled: Boolean = false
 
@@ -28,8 +27,8 @@ object Md5Login : SubPlugin {
     }
 
     override fun onDisable() {
-        enabled = false
         md5LoginCommand.unregister()
+        enabled = false
     }
 
     object md5LoginCommand : SimpleCommand(
