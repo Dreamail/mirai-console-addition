@@ -7,7 +7,6 @@ import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
 import net.mamoe.mirai.console.data.*
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
-import net.mamoe.yamlkt.Yaml
 import top.fan2tao.mirai.consoleaddition.subplugins.AutoLogin
 import top.fan2tao.mirai.consoleaddition.subplugins.Md5Login
 

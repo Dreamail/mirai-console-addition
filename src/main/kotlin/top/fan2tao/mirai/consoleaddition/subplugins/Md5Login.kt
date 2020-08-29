@@ -3,16 +3,12 @@ package top.fan2tao.mirai.consoleaddition.subplugins
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.alsoLogin
-import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
 import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
 import net.mamoe.mirai.event.selectMessagesUnit
-import net.mamoe.mirai.utils.DirectoryLogger
-import net.mamoe.mirai.utils.weeksToMillis
 import top.fan2tao.mirai.consoleaddition.AdditionBase
-import java.io.File
 
 object Md5Login : SubPlugin {
     override var on: Boolean = false
