@@ -6,7 +6,7 @@
 
     <groupId>top.fan2tao.mirai</groupId>
     <artifactId>console-addition</artifactId>
-    <version>1.2-alpha</version>
+    <version>1.2-beta</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,6 +21,10 @@
         <repository>
             <id>jcenter</id>
             <url>https://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
 
@@ -41,6 +45,25 @@
                             <sourceDirs>
                                 <source>src/main/kotlin</source>
                             </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>kapt</id>
+                        <goals>
+                            <goal>kapt</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                            <annotationProcessorPaths>
+                                <!-- Specify your annotation processors here. -->
+                                <annotationProcessorPath>
+                                    <groupId>com.google.auto.service</groupId>
+                                    <artifactId>auto-service</artifactId>
+                                    <version>1.0-rc7</version>
+                                </annotationProcessorPath>
+                            </annotationProcessorPaths>
                         </configuration>
                     </execution>
                 </executions>
@@ -82,7 +105,7 @@
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-console</artifactId>
-            <version>1.0-M3</version>
+            <version>1.0-M4-dev-3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -94,8 +117,18 @@
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-console-pure</artifactId>
-            <version>1.0-M3</version>
+            <version>1.0-M4-dev-3</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service</artifactId>
+            <version>1.0-rc7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service-annotations</artifactId>
+            <version>1.0-rc7</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

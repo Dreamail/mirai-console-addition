@@ -1,16 +1,26 @@
 package top.fan2tao.mirai.consoleaddition
 
+import com.google.auto.service.AutoService
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
 import net.mamoe.mirai.console.data.*
+import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
+import net.mamoe.mirai.console.plugin.jvm.SimpleJvmPluginDescription
 import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
 import top.fan2tao.mirai.consoleaddition.subplugins.AutoLogin
 import top.fan2tao.mirai.consoleaddition.subplugins.Md5Login
 
-object AdditionBase : KotlinPlugin() {
+@AutoService(JvmPlugin::class)
+object AdditionBase : KotlinPlugin(
+        SimpleJvmPluginDescription(
+                "Console-Addition",
+                "1.2-beta",
+                "Pai2Chen"
+        )
+) {
     private val subPlugins = mapOf(
             Pair("autologin", Pair(AutoLogin, PluginConfig.autoLogin)),
             Pair("md5login", Pair(Md5Login, PluginConfig.md5Login))
@@ -18,31 +28,6 @@ object AdditionBase : KotlinPlugin() {
 
     interface IConfig {
         var enabled: Boolean
-    }
-
-    @Serializable
-    data class Config(
-            var autologin: AutoLogin,
-            var md5login: Md5Login
-    ) {
-        @Serializable
-        data class AutoLogin(
-                override var enabled: Boolean = true,
-
-                var qq: Long,
-                var passwd: String
-        ) : IConfig
-        @Serializable
-        data class Md5Login(
-                override var enabled: Boolean = true,
-        ) : IConfig
-        fun get(str: String) : IConfig? {
-            return when(str) {
-                "autologin" -> autologin
-                "md5login" -> md5login
-                else -> null
-            }
-        }
     }
 
     object PluginConfig : AutoSavePluginConfig() {

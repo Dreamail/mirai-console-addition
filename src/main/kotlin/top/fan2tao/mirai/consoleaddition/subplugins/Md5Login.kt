@@ -1,13 +1,16 @@
 package top.fan2tao.mirai.consoleaddition.subplugins
 
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
+import net.mamoe.mirai.console.command.ConsoleCommandSender.INSTANCE.sendMessage
 import net.mamoe.mirai.console.util.ConsoleExperimentalAPI
-import net.mamoe.mirai.event.selectMessagesUnit
+import net.mamoe.mirai.message.nextMessageOrNull
+import net.mamoe.mirai.utils.secondsToMillis
 import top.fan2tao.mirai.consoleaddition.AdditionBase
 
 object Md5Login : SubPlugin {
@@ -49,18 +52,17 @@ object Md5Login : SubPlugin {
                     //this.loginSolver = MiraiConsoleImplementationBridge.createLoginSolver(id, this)
                 }.alsoLogin()
             }.fold(
-                    onSuccess = { AdditionBase.logger.info("${it.nick} ($id) Login succeed") },
+                    onSuccess = { sendMessage("${it.nick} ($id) Login successful") },
                     onFailure = { throwable ->
-                        AdditionBase.logger.info(
+                        sendMessage(
                                 "Login failed: ${throwable.localizedMessage ?: throwable.message ?: throwable.toString()}" +
-                                        if (this is MessageEventContextAware<*>) {
-                                            this.fromEvent.selectMessagesUnit {
-                                                "stacktrace" reply {
-                                                    throwable.stackTraceToString()
-                                                }
+                                        if (this is CommandSenderOnMessage<*>) {
+                                            AdditionBase.launch(CoroutineName("stacktrace delayer from Login")) {
+                                                fromEvent.nextMessageOrNull(60.secondsToMillis) { it.message.contentEquals("stacktrace") }
                                             }
-                                            "test"
-                                        } else "")
+                                            "\n 1 分钟内发送 stacktrace 以获取堆栈信息"
+                                        } else ""
+                        )
 
                         throw throwable
                     }
