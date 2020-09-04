@@ -77,7 +77,7 @@ md5login:
 ```
 
 > 为保留正常登录（不保存密码）的模式，自动登录采用了新的命令作为入口。
-> 自动登录保存的是用户的md5密码，保存在data/Console-Addition/config.yml内autologin字段中
+> 自动登录保存的是用户的md5密码，保存在config/Console-Addition/top.fan2tao.mirai.consoleaddition.AdditionBase.PluginConfig内autologin字段中
 
 ```yaml
 ## config/Console-Addition/top.fan2tao.mirai.consoleaddition.AdditionBase.PluginConfig
