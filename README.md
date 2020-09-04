@@ -33,7 +33,7 @@ mirai-console的扩展插件，提供对console功能的增强
 
 ### 配置文件
 ```yaml
-## data/Console-Addition/config.yml
+## config/Console-Addition/top.fan2tao.mirai.consoleaddition.AdditionBase.PluginConfig
 autologin: 
   enabled: true
   qq: 0
@@ -80,7 +80,7 @@ md5login:
 > 自动登录保存的是用户的md5密码，保存在data/Console-Addition/config.yml内autologin字段中
 
 ```yaml
-## plugin/ConsoleAddition/auto-login.yml
+## config/Console-Addition/top.fan2tao.mirai.consoleaddition.AdditionBase.PluginConfig
 
 autologin: 
   enabled: true
